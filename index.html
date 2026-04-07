@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VoiceLink — Real-Time Calling</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap');
+
+  :root {
+    --bg: #0b0d10;
+    --surface: #13161b;
+    --surface2: #1a1e26;
+    --border: rgba(255,255,255,0.07);
+    --accent: #00e5a0;
+    --accent2: #0077ff;
+    --danger: #ff4757;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .logo {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--accent);
+  }
+  .logo span { color: var(--text); }
+  .status-pill {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--muted);
+    transition: background 0.3s;
+  }
+  .status-dot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .status-dot.calling { background: #facc15; box-shadow: 0 0 8px #facc15; }
+
+  /* ── MAIN LAYOUT ── */
+  .app {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 0;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 28px 24px;
+    gap: 24px;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    display: flex; flex-direction: column; gap: 18px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+
+  .card-title {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Room ID input */
+  .input-group { display: flex; flex-direction: column; gap: 10px; }
+  .input-row { display: flex; gap: 8px; }
+  .field {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field:focus { border-color: var(--accent); }
+  .field::placeholder { color: var(--muted); }
+
+  .btn {
+    padding: 10px 18px;
+    border-radius: 9px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent2); }
+  .btn-danger {
+    background: var(--danger);
+    color: #fff;
+  }
+  .btn-danger:hover { filter: brightness(1.1); }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── AUDIO CONTROLS ── */
+  .controls-row {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .ctrl-btn {
+    flex: 1;
+    min-width: 70px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 5px;
+    padding: 14px 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+  .ctrl-btn:hover { border-color: var(--accent2); color: var(--text); }
+  .ctrl-btn.active { border-color: var(--accent); color: var(--accent); }
+  .ctrl-btn.danger-active { border-color: var(--danger); color: var(--danger); }
+  .ctrl-icon { font-size: 20px; }
+
+  /* ── VISUALIZER ── */
+  .viz-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  canvas#vizCanvas {
+    width: 100%;
+    height: 60px;
+    display: block;
+    border-radius: 8px;
+    background: var(--surface2);
+  }
+
+  /* ── MAIN PANEL ── */
+  .main-panel {
+    display: flex; flex-direction: column; gap: 18px;
+  }
+
+  /* Video area */
+  .video-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .video-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .video-tile video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .video-label {
+    position: absolute;
+    bottom: 10px; left: 12px;
+    background: rgba(0,0,0,0.55);
+    color: var(--text);
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+  }
+  .video-avatar {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; color: var(--muted);
+  }
+  .video-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 8px;
+  }
+
+  /* Stats panel */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 11px; color: var(--muted); margin-bottom: 6px;
+    font-family: 'DM Mono', monospace; letter-spacing: 0.5px;
+  }
+  .stat-value {
+    font-size: 20px; font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    color: var(--accent);
+  }
+
+  /* Log */
+  .log-box {
+    background: var(--surface2);
+    border-radius: 9px;
+    padding: 12px 14px;
+    height: 130px;
+    overflow-y: auto;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .log-box p { margin: 0; }
+  .log-box p.info { color: var(--accent2); }
+  .log-box p.ok { color: var(--accent); }
+  .log-box p.err { color: var(--danger); }
+  .log-box p.warn { color: #facc15; }
+  .log-box::-webkit-scrollbar { width: 4px; }
+  .log-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* Noise badge */
+  .noise-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0, 229, 160, 0.08);
+    border: 1px solid rgba(0,229,160,0.2);
+    padding: 5px 12px; border-radius: 999px;
+    font-size: 12px; color: var(--accent);
+    font-family: 'DM Mono', monospace;
+  }
+
+  @media (max-width: 768px) {
+    .app { grid-template-columns: 1fr; }
+    .video-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(2,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Voice<span>Link</span></div>
+  <div class="status-pill">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">Idle</span>
+  </div>
+</header>
+
+<div class="app">
+
+  <div class="sidebar">
+
+    <div class="card">
+      <div class="card-title">Room ID</div>
+      <div class="input-group">
+        <div class="input-row">
+          <input class="field" id="roomId" placeholder="Enter or generate room ID" />
+          <button class="btn btn-secondary" onclick="generateRoom()">Gen</button>
+        </div>
+        <div class="input-row">
+          <button class="btn btn-primary" id="joinBtn" onclick="joinRoom()" style="flex:1">Join / Start</button>
+          <button class="btn btn-danger" id="leaveBtn" onclick="leaveRoom()" disabled>Leave</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Call Controls</div>
+      <div class="controls-row">
+        <div class="ctrl-btn active" id="micBtn" onclick="toggleMic()">
+          <span class="ctrl-icon">🎙️</span>
+          <span id="micLabel">Mic On</span>
+        </div>
+        <div class="ctrl-btn" id="camBtn" onclick="toggleCam()">
+          <span class="ctrl-icon">📷</span>
+          <span id="camLabel">Cam Off</span>
+        </div>
+        <div class="ctrl-btn" id="spkBtn" onclick="toggleSpeaker()">
+          <span class="ctrl-icon">🔊</span>
+          <span id="spkLabel">Speaker</span>
+        </div>
+        <div class="ctrl-btn" id="noiseBtn" onclick="toggleNoiseSuppression()">
+          <span class="ctrl-icon">🧹</span>
+          <span id="noiseLabel">Noise AI</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Voice Activity</div>
+      <div class="viz-wrap" style="padding:0;border:none;background:none;">
+        <canvas id="vizCanvas"></canvas>
+      </div>
+      <div style="margin-top:10px; display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-size:12px; color:var(--muted); font-family:'DM Mono',monospace;">
+          Level: <span id="vadLevel">—</span> dB
+        </span>
+        <span class="noise-badge" id="noiseBadge">● Phase 2 Ready</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Your Device</div>
+      <div style="display:flex; flex-direction:column; gap:8px; font-size:13px; font-family:'DM Mono',monospace; color:var(--muted);">
+        <div>Mic: <span id="deviceMic" style="color:var(--text)">—</span></div>
+        <div>Camera: <span id="deviceCam" style="color:var(--text)">—</span></div>
+        <div>Codec: <span id="deviceCodec" style="color:var(--text)">Opus / VP8</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="main-panel">
+
+    <div class="video-grid">
+      <div class="video-tile">
+        <video id="localVideo" autoplay muted playsinline></video>
+        <div class="video-overlay" id="localOverlay">
+          <div class="video-avatar">👤</div>
+        </div>
+        <div class="video-label">You (Local)</div>
+      </div>
+      <div class="video-tile">
+        <video id="remoteVideo" autoplay playsinline></video>
+        <div class="video-overlay" id="remoteOverlay">
+          <div class="video-avatar">👥</div>
+          <span style="color:var(--muted); font-size:13px; font-family:'DM Mono',monospace;">Waiting for peer…</span>
+        </div>
+        <div class="video-label">Remote Peer</div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Duration</div>
+        <div class="stat-value" id="statDuration">00:00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">ICE State</div>
+        <div class="stat-value" id="statIce" style="font-size:13px; color:var(--muted)">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sig. Channel</div>
+        <div class="stat-value" id="statSig" style="font-size:13px; color:var(--muted)">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Peers</div>
+        <div class="stat-value" id="statPeers">0</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding-bottom:14px;">
+      <div class="card-title">Event Log</div>
+      <div class="log-box" id="logBox">
+        <p class="info">// VoiceLink App Loaded. Ready to connect.</p>
+        <p class="ok">// Socket.io and DSP Pipeline Linked.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="noise-engine.js"></script>
+
+<script>
+// ─────────────────────────────────────────────
+//  VoiceLink Main Application Logic
+// ─────────────────────────────────────────────
+
+const ICE_SERVERS = [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'stun:stun1.l.google.com:19302' }
+];
+
+// If testing on mobile, change localhost to your computer's local IP (e.g., 192.168.x.x)
+// Remove the IP! Let it auto-detect the secure Pinggy link.
+const socket = io();
+
+let pc = null;               
+let localStream = null;      
+let currentRoom = null;
+let callTimer = null;        
+let callSeconds = 0;
+let micEnabled = true;
+
+// Change this from false to true so video starts on load
+let camEnabled = true; 
+let speakerEnabled = true;
+let noiseEnabled = false;
+// ── Audio analysis (for visualizer) ──────────
+let audioCtx = null, analyser = null, vizAF = null;
+
+// ── Socket Event Listeners ───────────────────
+socket.on('signal', async (data) => {
+  if (!pc) await createPeerConnection();
+  
+  const msg = data.signal;
+  if (msg.type === 'offer') {
+    log('Received offer, sending answer…', 'info');
+    await pc.setRemoteDescription(new RTCSessionDescription(msg));
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    socket.emit('signal', { roomId: currentRoom, signal: answer });
+  } else if (msg.type === 'answer') {
+    log('Received answer.', 'info');
+    await pc.setRemoteDescription(new RTCSessionDescription(msg));
+  } else if (msg.candidate) {
+    try { await pc.addIceCandidate(new RTCIceCandidate(msg.candidate)); } catch(e) {}
+  }
+});
+
+socket.on('peer-joined', async () => {
+  log('Peer joined room — initiating offer…', 'info');
+  if (!pc) await createPeerConnection();
+  initiateCall();
+});
+
+// ── Logging & Helpers ────────────────────────
+function log(msg, type = '') {
+  const box = document.getElementById('logBox');
+  const p = document.createElement('p');
+  p.className = type;
+  const ts = new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  p.textContent = `[${ts}] ${msg}`;
+  box.appendChild(p);
+  box.scrollTop = box.scrollHeight;
+}
+
+function setStatus(text, state = '') {
+  document.getElementById('statusText').textContent = text;
+  const dot = document.getElementById('statusDot');
+  dot.className = 'status-dot' + (state ? ' ' + state : '');
+}
+
+function generateRoom() {
+  const id = Math.random().toString(36).substr(2, 8).toUpperCase();
+  document.getElementById('roomId').value = id;
+  log(`Room ID generated: ${id}`, 'info');
+}
+
+function setStat(id, val) {
+  document.getElementById(id).textContent = val;
+}
+
+// ── Duration timer ────────────────────────────
+function startTimer() {
+  callSeconds = 0;
+  callTimer = setInterval(() => {
+    callSeconds++;
+    const m = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+    const s = String(callSeconds % 60).padStart(2, '0');
+    setStat('statDuration', `${m}:${s}`);
+  }, 1000);
+}
+function stopTimer() {
+  clearInterval(callTimer);
+  callTimer = null;
+  setStat('statDuration', '00:00');
+}
+
+// ── Media Setup & DSP Integration ─────────────
+// ── Media Setup & DSP Integration ─────────────
+async function getLocalMedia() {
+  try {
+    const constraints = {
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+        sampleRate: 48000
+      },
+      video: camEnabled ? { width: 1280, height: 720, frameRate: 30 } : false
+    };
+    
+    // 1. Get raw media
+    let rawStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+    // 2. PHASE 2 HOOK: Pass raw audio through our custom DSP Pipeline
+    if (window.VoiceLinkNoiseEngine) {
+      localStream = await window.VoiceLinkNoiseEngine.init(rawStream);
+      
+      // THE FIX: The Web Audio API strips video tracks! 
+      // We must manually copy the video track from rawStream back into our cleaned localStream.
+      const videoTracks = rawStream.getVideoTracks();
+      if (videoTracks.length > 0) {
+        localStream.addTrack(videoTracks[0]);
+      }
+    } else {
+      localStream = rawStream; 
+    }
+
+    // Show rawStream in local preview
+    const localVideo = document.getElementById('localVideo');
+    localVideo.srcObject = rawStream;
+    document.getElementById('localOverlay').style.display = 'none';
+
+    // Device labels
+    const tracks = rawStream.getTracks();
+    tracks.forEach(t => {
+      if (t.kind === 'audio') setStat('deviceMic', t.label || 'Microphone');
+      if (t.kind === 'video') setStat('deviceCam', t.label || 'Camera');
+    });
+
+    setupVisualizer(localStream);
+    log('Local media acquired and routed through DSP.', 'ok');
+    return true;
+  } catch (err) {
+    log(`Media error: ${err.message}`, 'err');
+    return false;
+  }
+}
+
+// ── WebRTC Core ───────────────────────────────
+async function joinRoom() {
+  currentRoom = document.getElementById('roomId').value.trim();
+  if (!currentRoom) { log('Enter a room ID first.', 'warn'); return; }
+
+  const ok = await getLocalMedia();
+  if (!ok) return;
+
+  document.getElementById('joinBtn').disabled = true;
+  document.getElementById('leaveBtn').disabled = false;
+  setStatus('Connecting…', 'calling');
+  setStat('statPeers', '0');
+
+  // Emit join to the Node.js signaling server
+  socket.emit('join', currentRoom);
+  setStat('statSig', 'Socket.io Connected');
+  log(`Joined room: ${currentRoom}`, 'ok');
+
+  setStatus('In Room', 'active');
+  startTimer();
+}
+
+async function createPeerConnection() {
+  pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+
+  // Add local tracks (these are the post-DSP processed tracks!)
+  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+  // ICE candidates
+  pc.onicecandidate = (evt) => {
+    if (evt.candidate) {
+      socket.emit('signal', { roomId: currentRoom, signal: { candidate: evt.candidate } });
+    }
+  };
+
+  // ICE state
+  pc.oniceconnectionstatechange = () => {
+    const s = pc.iceConnectionState;
+    setStat('statIce', s);
+    log(`ICE state: ${s}`, s === 'connected' ? 'ok' : s === 'failed' ? 'err' : 'info');
+    if (s === 'connected') {
+      setStat('statPeers', '1');
+      setStatus('In Call', 'active');
+    }
+    if (s === 'disconnected' || s === 'failed') {
+      setStat('statPeers', '0');
+      setStatus('Peer Lost', '');
+    }
+  };
+
+  // Remote stream
+  pc.ontrack = (evt) => {
+    log('Remote track received.', 'ok');
+    const remoteVideo = document.getElementById('remoteVideo');
+    remoteVideo.srcObject = evt.streams[0];
+    document.getElementById('remoteOverlay').style.display = 'none';
+    setStat('statPeers', '1');
+  };
+
+  log('RTCPeerConnection created.', 'info');
+}
+
+async function initiateCall() {
+  const offer = await pc.createOffer({
+    offerToReceiveAudio: true,
+    offerToReceiveVideo: camEnabled
+  });
+  await pc.setLocalDescription(offer);
+  socket.emit('signal', { roomId: currentRoom, signal: offer });
+  log('Offer sent via Socket.io.', 'info');
+}
+
+function leaveRoom() {
+  if (pc) { pc.close(); pc = null; }
+  if (localStream) {
+    localStream.getTracks().forEach(t => t.stop());
+    localStream = null;
+  }
+  if (audioCtx) { audioCtx.close(); audioCtx = null; analyser = null; }
+  cancelAnimationFrame(vizAF);
+
+  document.getElementById('localVideo').srcObject = null;
+  document.getElementById('remoteVideo').srcObject = null;
+  document.getElementById('localOverlay').style.display = 'flex';
+  document.getElementById('remoteOverlay').style.display = 'flex';
+  document.getElementById('joinBtn').disabled = false;
+  document.getElementById('leaveBtn').disabled = true;
+
+  stopTimer();
+  setStat('statIce', '—');
+  setStat('statSig', '—');
+  setStat('statPeers', '0');
+  setStatus('Idle', '');
+  log('Left room. Session ended.', 'warn');
+}
+
+// ── Controls ──────────────────────────────────
+function toggleMic() {
+  micEnabled = !micEnabled;
+  if (localStream) {
+    localStream.getAudioTracks().forEach(t => t.enabled = micEnabled);
+  }
+  const btn = document.getElementById('micBtn');
+  btn.className = 'ctrl-btn' + (micEnabled ? ' active' : ' danger-active');
+  document.getElementById('micLabel').textContent = micEnabled ? 'Mic On' : 'Muted';
+  log(`Microphone ${micEnabled ? 'unmuted' : 'muted'}.`);
+}
+
+function toggleCam() {
+  camEnabled = !camEnabled;
+  if (localStream) {
+    localStream.getVideoTracks().forEach(t => t.enabled = camEnabled);
+  }
+  const btn = document.getElementById('camBtn');
+  btn.className = 'ctrl-btn' + (camEnabled ? ' active' : '');
+  document.getElementById('camLabel').textContent = camEnabled ? 'Cam On' : 'Cam Off';
+  log(`Camera ${camEnabled ? 'enabled' : 'disabled'}.`);
+}
+
+function toggleSpeaker() {
+  speakerEnabled = !speakerEnabled;
+  const rv = document.getElementById('remoteVideo');
+  if(rv) rv.muted = !speakerEnabled;
+  const btn = document.getElementById('spkBtn');
+  btn.className = 'ctrl-btn' + (speakerEnabled ? ' active' : ' danger-active');
+  document.getElementById('spkLabel').textContent = speakerEnabled ? 'Speaker' : 'Spk Off';
+  log(`Speaker ${speakerEnabled ? 'enabled' : 'disabled'}.`);
+}
+
+function toggleNoiseSuppression() {
+  if (!window.VoiceLinkNoiseEngine) {
+    log("DSP Engine not loaded.", "err");
+    return;
+  }
+
+  noiseEnabled = !noiseEnabled;
+  const btn = document.getElementById('noiseBtn');
+  btn.className = 'ctrl-btn' + (noiseEnabled ? ' active' : '');
+  document.getElementById('noiseLabel').textContent = noiseEnabled ? 'Noise ON' : 'Noise AI';
+  
+  // Phase 2 Enrollment Hook
+  if (noiseEnabled && !window.VoiceLinkNoiseEngine.voiceprint) {
+    document.getElementById('noiseBadge').textContent = '● Enrolling (4s)...';
+    log("Voiceprint missing. Enrolling for 4s... Keep talking!", "warn");
+    
+    window.VoiceLinkNoiseEngine.enrollVoice(4000).then(() => {
+      log("Voiceprint saved. Noise AI is now gating.", "ok");
+      document.getElementById('noiseBadge').textContent = '● Noise AI Active';
+      window.VoiceLinkNoiseEngine.setEnabled(true);
+    });
+  } else {
+    document.getElementById('noiseBadge').textContent = noiseEnabled ? '● Noise AI Active' : '● Phase 2 Ready';
+    window.VoiceLinkNoiseEngine.setEnabled(noiseEnabled);
+    log(`Noise AI ${noiseEnabled ? 'activated' : 'deactivated'}.`, noiseEnabled ? 'ok' : 'warn');
+  }
+}
+
+// ── Visualizer ────────────────────────────────
+function setupVisualizer(stream) {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 256;
+  const src = audioCtx.createMediaStreamSource(stream);
+  src.connect(analyser);
+
+  const canvas = document.getElementById('vizCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * devicePixelRatio;
+  canvas.height = canvas.offsetHeight * devicePixelRatio;
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+
+  const W = canvas.offsetWidth, H = canvas.offsetHeight;
+  const bufLen = analyser.frequencyBinCount;
+  const dataArr = new Uint8Array(bufLen);
+
+  function draw() {
+    vizAF = requestAnimationFrame(draw);
+    analyser.getByteFrequencyData(dataArr);
+    ctx.clearRect(0, 0, W, H);
+    const barW = (W / bufLen) * 2.2;
+    let x = 0;
+    let sum = 0;
+    for (let i = 0; i < bufLen; i++) {
+      const v = dataArr[i];
+      sum += v;
+      const h = (v / 255) * H;
+      const alpha = 0.5 + (v / 255) * 0.5;
+      ctx.fillStyle = `rgba(0,229,160,${alpha})`;
+      ctx.fillRect(x, H - h, barW - 1, h);
+      x += barW;
+    }
+    const avg = sum / bufLen;
+    const db = avg > 0 ? (20 * Math.log10(avg / 255)).toFixed(1) : '—';
+    document.getElementById('vadLevel').textContent = db;
+  }
+  draw();
+}
+</script>
+</body>
+</html>
