@@ -32,6 +32,7 @@ io.on('connection', (socket) => {
     });
 });
 
-http.listen(3001, () => {
-    console.log('VoiceLink Unified Server running on port 3001');
+const PORT = process.env.PORT || 3001;
+http.listen(PORT, () => {
+    console.log(`VoiceLink Unified Server running on port ${PORT}`);
 });
