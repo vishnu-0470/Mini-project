@@ -15,6 +15,7 @@
     --accent: #00e5a0;
     --accent2: #0077ff;
     --danger: #ff4757;
+    --warn: #facc15;
     --text: #e8eaf0;
     --muted: #6b7280;
     --radius: 14px;
@@ -40,12 +41,7 @@
     border-bottom: 1px solid var(--border);
     background: var(--surface);
   }
-  .logo {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: var(--accent);
-  }
+  .logo { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; color: var(--accent); }
   .logo span { color: var(--text); }
   .status-pill {
     display: flex; align-items: center; gap: 7px;
@@ -53,35 +49,27 @@
     border: 1px solid var(--border);
     padding: 6px 14px;
     border-radius: 999px;
-    font-size: 13px;
-    color: var(--muted);
+    font-size: 13px; color: var(--muted);
     font-family: 'DM Mono', monospace;
   }
-  .status-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--muted);
-    transition: background 0.3s;
-  }
-  .status-dot.active { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
-  .status-dot.calling { background: #facc15; box-shadow: 0 0 8px #facc15; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
+  .status-dot.active  { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .status-dot.calling { background: var(--warn);   box-shadow: 0 0 8px var(--warn); }
+  .status-dot.error   { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
 
-  /* ── MAIN LAYOUT ── */
+  /* ── LAYOUT ── */
   .app {
     flex: 1;
     display: grid;
     grid-template-columns: 320px 1fr;
-    gap: 0;
+    gap: 24px;
     max-width: 1200px;
     width: 100%;
     margin: 0 auto;
     padding: 28px 24px;
-    gap: 24px;
   }
 
-  /* ── SIDEBAR ── */
-  .sidebar {
-    display: flex; flex-direction: column; gap: 18px;
-  }
+  .sidebar { display: flex; flex-direction: column; gap: 18px; }
 
   .card {
     background: var(--surface);
@@ -89,145 +77,79 @@
     border-radius: var(--radius);
     padding: 20px;
   }
-
   .card-title {
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 14px;
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 14px;
     font-family: 'DM Mono', monospace;
   }
 
-  /* Room ID input */
+  /* Inputs */
   .input-group { display: flex; flex-direction: column; gap: 10px; }
   .input-row { display: flex; gap: 8px; }
   .field {
     flex: 1;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    padding: 10px 14px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 9px; padding: 10px 14px;
+    color: var(--text); font-family: 'DM Mono', monospace; font-size: 14px;
+    outline: none; transition: border-color 0.2s;
   }
   .field:focus { border-color: var(--accent); }
   .field::placeholder { color: var(--muted); }
 
   .btn {
-    padding: 10px 18px;
-    border-radius: 9px;
-    border: none;
-    cursor: pointer;
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.15s;
+    padding: 10px 18px; border-radius: 9px; border: none;
+    cursor: pointer; font-family: 'Syne', sans-serif; font-size: 14px;
+    font-weight: 600; transition: all 0.15s;
   }
-  .btn-primary {
-    background: var(--accent);
-    color: #000;
-  }
-  .btn-primary:hover { filter: brightness(1.1); }
-  .btn-secondary {
-    background: var(--surface2);
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
+  .btn-primary  { background: var(--accent); color: #000; }
+  .btn-primary:hover  { filter: brightness(1.1); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
   .btn-secondary:hover { border-color: var(--accent2); }
-  .btn-danger {
-    background: var(--danger);
-    color: #fff;
-  }
-  .btn-danger:hover { filter: brightness(1.1); }
-  .btn:active { transform: scale(0.97); }
+  .btn-danger   { background: var(--danger); color: #fff; }
+  .btn-danger:hover   { filter: brightness(1.1); }
+  .btn:active   { transform: scale(0.97); }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* ── AUDIO CONTROLS ── */
-  .controls-row {
-    display: flex; gap: 10px; flex-wrap: wrap;
-  }
+  /* Controls */
+  .controls-row { display: flex; gap: 10px; flex-wrap: wrap; }
   .ctrl-btn {
-    flex: 1;
-    min-width: 70px;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 5px;
-    padding: 14px 8px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 12px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
+    flex: 1; min-width: 70px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 5px; padding: 14px 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius); cursor: pointer; transition: all 0.2s;
+    font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace;
   }
-  .ctrl-btn:hover { border-color: var(--accent2); color: var(--text); }
-  .ctrl-btn.active { border-color: var(--accent); color: var(--accent); }
-  .ctrl-btn.danger-active { border-color: var(--danger); color: var(--danger); }
+  .ctrl-btn:hover        { border-color: var(--accent2); color: var(--text); }
+  .ctrl-btn.active       { border-color: var(--accent);  color: var(--accent); }
+  .ctrl-btn.danger-active{ border-color: var(--danger);  color: var(--danger); }
   .ctrl-icon { font-size: 20px; }
 
-  /* ── VISUALIZER ── */
-  .viz-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-  }
+  /* Visualizer */
   canvas#vizCanvas {
-    width: 100%;
-    height: 60px;
-    display: block;
-    border-radius: 8px;
-    background: var(--surface2);
+    width: 100%; height: 60px; display: block;
+    border-radius: 8px; background: var(--surface2);
   }
 
-  /* ── MAIN PANEL ── */
-  .main-panel {
-    display: flex; flex-direction: column; gap: 18px;
-  }
+  /* Main panel */
+  .main-panel { display: flex; flex-direction: column; gap: 18px; }
 
-  /* Video area */
-  .video-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
+  .video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .video-tile {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    position: relative;
-    aspect-ratio: 16/9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; position: relative;
+    aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;
   }
-  .video-tile video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+  .video-tile video { width: 100%; height: 100%; object-fit: cover; display: block; }
   .video-label {
-    position: absolute;
-    bottom: 10px; left: 12px;
-    background: rgba(0,0,0,0.55);
-    color: var(--text);
-    font-size: 12px;
-    padding: 3px 10px;
-    border-radius: 6px;
+    position: absolute; bottom: 10px; left: 12px;
+    background: rgba(0,0,0,0.55); color: var(--text);
+    font-size: 12px; padding: 3px 10px; border-radius: 6px;
     font-family: 'DM Mono', monospace;
   }
   .video-avatar {
     width: 64px; height: 64px; border-radius: 50%;
-    background: var(--surface2);
-    border: 2px solid var(--border);
+    background: var(--surface2); border: 2px solid var(--border);
     display: flex; align-items: center; justify-content: center;
     font-size: 28px; color: var(--muted);
   }
@@ -237,62 +159,63 @@
     flex-direction: column; gap: 8px;
   }
 
-  /* Stats panel */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
+  /* Stats */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
   }
-  .stat-label {
-    font-size: 11px; color: var(--muted); margin-bottom: 6px;
-    font-family: 'DM Mono', monospace; letter-spacing: 0.5px;
+  .stat-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; font-family: 'DM Mono', monospace; }
+  .stat-value { font-size: 20px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--accent); }
+
+  /* Netstat strip */
+  .netstats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .netstat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px;
   }
-  .stat-value {
-    font-size: 20px; font-weight: 700;
-    font-family: 'DM Mono', monospace;
-    color: var(--accent);
-  }
+  .netstat-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; font-family: 'DM Mono', monospace; letter-spacing: 0.5px; }
+  .netstat-value { font-size: 15px; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--accent2); }
 
   /* Log */
   .log-box {
-    background: var(--surface2);
-    border-radius: 9px;
-    padding: 12px 14px;
-    height: 130px;
-    overflow-y: auto;
-    font-size: 12px;
-    font-family: 'DM Mono', monospace;
-    color: var(--muted);
+    background: var(--surface2); border-radius: 9px; padding: 12px 14px;
+    height: 130px; overflow-y: auto;
+    font-size: 12px; font-family: 'DM Mono', monospace; color: var(--muted);
     display: flex; flex-direction: column; gap: 4px;
   }
   .log-box p { margin: 0; }
   .log-box p.info { color: var(--accent2); }
-  .log-box p.ok { color: var(--accent); }
-  .log-box p.err { color: var(--danger); }
-  .log-box p.warn { color: #facc15; }
+  .log-box p.ok   { color: var(--accent);  }
+  .log-box p.err  { color: var(--danger);  }
+  .log-box p.warn { color: var(--warn);    }
   .log-box::-webkit-scrollbar { width: 4px; }
   .log-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
   /* Noise badge */
   .noise-badge {
     display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(0, 229, 160, 0.08);
-    border: 1px solid rgba(0,229,160,0.2);
+    background: rgba(0,229,160,0.08); border: 1px solid rgba(0,229,160,0.2);
     padding: 5px 12px; border-radius: 999px;
-    font-size: 12px; color: var(--accent);
-    font-family: 'DM Mono', monospace;
+    font-size: 12px; color: var(--accent); font-family: 'DM Mono', monospace;
   }
+
+  /* Error toast */
+  #errorToast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--danger); color: #fff;
+    padding: 10px 20px; border-radius: 8px;
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    display: none; z-index: 999;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
   @media (max-width: 768px) {
     .app { grid-template-columns: 1fr; }
     .video-grid { grid-template-columns: 1fr; }
-    .stats-row { grid-template-columns: repeat(2,1fr); }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .netstats-row { grid-template-columns: repeat(3, 1fr); }
   }
 </style>
 </head>
@@ -308,18 +231,20 @@
 
 <div class="app">
 
+  <!-- ── SIDEBAR ── -->
   <div class="sidebar">
 
     <div class="card">
       <div class="card-title">Room ID</div>
       <div class="input-group">
         <div class="input-row">
-          <input class="field" id="roomId" placeholder="Enter or generate room ID" />
+          <input class="field" id="roomId" placeholder="Enter or generate room ID"
+                 maxlength="32" pattern="[A-Za-z0-9\-]+" />
           <button class="btn btn-secondary" onclick="generateRoom()">Gen</button>
         </div>
         <div class="input-row">
-          <button class="btn btn-primary" id="joinBtn" onclick="joinRoom()" style="flex:1">Join / Start</button>
-          <button class="btn btn-danger" id="leaveBtn" onclick="leaveRoom()" disabled>Leave</button>
+          <button class="btn btn-primary"  id="joinBtn"  onclick="joinRoom()" style="flex:1">Join / Start</button>
+          <button class="btn btn-danger"   id="leaveBtn" onclick="leaveRoom()" disabled>Leave</button>
         </div>
       </div>
     </div>
@@ -335,7 +260,7 @@
           <span class="ctrl-icon">📷</span>
           <span id="camLabel">Cam Off</span>
         </div>
-        <div class="ctrl-btn" id="spkBtn" onclick="toggleSpeaker()">
+        <div class="ctrl-btn active" id="spkBtn" onclick="toggleSpeaker()">
           <span class="ctrl-icon">🔊</span>
           <span id="spkLabel">Speaker</span>
         </div>
@@ -348,9 +273,7 @@
 
     <div class="card">
       <div class="card-title">Voice Activity</div>
-      <div class="viz-wrap" style="padding:0;border:none;background:none;">
-        <canvas id="vizCanvas"></canvas>
-      </div>
+      <canvas id="vizCanvas"></canvas>
       <div style="margin-top:10px; display:flex; align-items:center; justify-content:space-between;">
         <span style="font-size:12px; color:var(--muted); font-family:'DM Mono',monospace;">
           Level: <span id="vadLevel">—</span> dB
@@ -370,14 +293,13 @@
 
   </div>
 
+  <!-- ── MAIN PANEL ── -->
   <div class="main-panel">
 
     <div class="video-grid">
       <div class="video-tile">
         <video id="localVideo" autoplay muted playsinline></video>
-        <div class="video-overlay" id="localOverlay">
-          <div class="video-avatar">👤</div>
-        </div>
+        <div class="video-overlay" id="localOverlay"><div class="video-avatar">👤</div></div>
         <div class="video-label">You (Local)</div>
       </div>
       <div class="video-tile">
@@ -409,6 +331,22 @@
       </div>
     </div>
 
+    <!-- ✅ NEW: Live network quality stats -->
+    <div class="netstats-row">
+      <div class="netstat-card">
+        <div class="netstat-label">Round-Trip Time</div>
+        <div class="netstat-value" id="statRtt">— ms</div>
+      </div>
+      <div class="netstat-card">
+        <div class="netstat-label">Packet Loss</div>
+        <div class="netstat-value" id="statLoss">—%</div>
+      </div>
+      <div class="netstat-card">
+        <div class="netstat-label">Audio Bitrate</div>
+        <div class="netstat-value" id="statBitrate">— kbps</div>
+      </div>
+    </div>
+
     <div class="card" style="padding-bottom:14px;">
       <div class="card-title">Event Log</div>
       <div class="log-box" id="logBox">
@@ -420,71 +358,552 @@
   </div>
 </div>
 
+<div id="errorToast"></div>
+
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script src="noise-engine.js"></script>
 
 <script>
-// ─────────────────────────────────────────────
-//  VoiceLink Main Application Logic
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+//  VoiceLink — Hardened Main Application Logic
+//
+//  Fixes over original:
+//  ✅ ICE candidate queue — candidates buffered until remoteDescription is set
+//  ✅ rawStream tracked separately — all raw mic/cam tracks stopped on leave
+//  ✅ Visualizer reuses NoiseEngine's AudioContext — no duplicate AudioContext
+//  ✅ Signaling state machine — prevents double-offer / race on peer-joined
+//  ✅ ICE restart on disconnected/failed state
+//  ✅ Room ID sanitized before use (strips non-alphanumeric)
+//  ✅ server 'error' event handled and shown to user
+//  ✅ server 'peer-left' event tears down peer cleanly
+//  ✅ Live RTT / packet-loss / bitrate stats via getStats() poll
+//  ✅ TURN server slot ready — fill in credentials in ICE_SERVERS
+// ─────────────────────────────────────────────────────────────────────────────
 
+// ── ICE Config ───────────────────────────────────────────────────────────────
+// 🔒 For production, add a TURN server to handle symmetric NAT:
+// { urls: 'turn:your-turn-server.com:3478', username: 'user', credential: 'pass' }
 const ICE_SERVERS = [
   { urls: 'stun:stun.l.google.com:19302' },
-  { urls: 'stun:stun1.l.google.com:19302' }
+  { urls: 'stun:stun1.l.google.com:19302' },
+  // { urls: 'turn:your-turn.example.com:3478', username: 'u', credential: 'p' }
 ];
 
-// If testing on mobile, change localhost to your computer's local IP (e.g., 192.168.x.x)
-// Remove the IP! Let it auto-detect the secure Pinggy link.
 const socket = io();
 
-let pc = null;               
-let localStream = null;      
-let currentRoom = null;
-let callTimer = null;        
-let callSeconds = 0;
-let micEnabled = true;
+// ── State ─────────────────────────────────────────────────────────────────────
+let pc             = null;
+let rawStream      = null;   // ✅ Original mic+cam stream (must be stopped on leave)
+let localStream    = null;   // Post-DSP stream sent to WebRTC
+let currentRoom    = null;
+let callTimer      = null;
+let callSeconds    = 0;
+let statsPoller    = null;
+let vizAF          = null;
 
-// Change this from false to true so video starts on load
-let camEnabled = true; 
+// ✅ ICE candidate queue — holds candidates received before setRemoteDescription
+let pendingCandidates = [];
+let remoteDescSet     = false;
+
+// ✅ Signaling guard — prevents handling peer-joined while already negotiating
+let isNegotiating = false;
+
+// UI state
+let micEnabled     = true;
+let camEnabled     = true;
 let speakerEnabled = true;
-let noiseEnabled = false;
-// ── Audio analysis (for visualizer) ──────────
-let audioCtx = null, analyser = null, vizAF = null;
+let noiseEnabled   = false;
 
-// ── Socket Event Listeners ───────────────────
+// Stats bookkeeping for delta calculations
+let _prevBytesReceived = 0;
+let _prevStatsTime     = 0;
+let _prevPacketsLost   = 0;
+let _prevPacketsReceived = 0;
+
+// ── Socket Handlers ───────────────────────────────────────────────────────────
 socket.on('signal', async (data) => {
   if (!pc) await createPeerConnection();
-  
+
   const msg = data.signal;
+
   if (msg.type === 'offer') {
-    log('Received offer, sending answer…', 'info');
+    log('Received offer — sending answer…', 'info');
     await pc.setRemoteDescription(new RTCSessionDescription(msg));
+    remoteDescSet = true;
+    await flushCandidateQueue();
+
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
     socket.emit('signal', { roomId: currentRoom, signal: answer });
+
   } else if (msg.type === 'answer') {
     log('Received answer.', 'info');
     await pc.setRemoteDescription(new RTCSessionDescription(msg));
-  } else if (msg.candidate) {
-    try { await pc.addIceCandidate(new RTCIceCandidate(msg.candidate)); } catch(e) {}
+    remoteDescSet = true;
+    await flushCandidateQueue();
+
+  } else if (msg.candidate !== undefined) {
+    const candidate = msg.candidate;
+    if (!remoteDescSet) {
+      // ✅ Buffer the candidate until remote description is applied
+      pendingCandidates.push(candidate);
+    } else {
+      try {
+        // null candidate = end-of-candidates sentinel, still valid to addIceCandidate
+        await pc.addIceCandidate(candidate ? new RTCIceCandidate(candidate) : null);
+      } catch (e) {
+        // Stale/duplicate candidates are common — log quietly
+        log(`ICE candidate error (non-fatal): ${e.message}`, 'warn');
+      }
+    }
   }
 });
 
-socket.on('peer-joined', async () => {
-  log('Peer joined room — initiating offer…', 'info');
+socket.on('peer-joined', async (peerId) => {
+  // ✅ Guard: don't initiate if we're already mid-negotiation
+  if (isNegotiating) {
+    log('Peer joined but already negotiating — ignoring duplicate.', 'warn');
+    return;
+  }
+  log(`Peer ${peerId} joined room — initiating offer…`, 'info');
   if (!pc) await createPeerConnection();
   initiateCall();
 });
 
-// ── Logging & Helpers ────────────────────────
+socket.on('peer-left', (peerId) => {
+  // ✅ Server now tells us when a peer disconnects
+  log(`Peer ${peerId} left the room.`, 'warn');
+  setStat('statPeers', '0');
+  setStatus('Peer Left', 'calling');
+  clearRemoteVideo();
+  stopStatsPoller();
+});
+
+socket.on('joined', ({ roomId, peerCount }) => {
+  log(`Room confirmed: ${roomId} (${peerCount} peer${peerCount > 1 ? 's' : ''}).`, 'ok');
+});
+
+socket.on('error', ({ code, message }) => {
+  // ✅ Handle server-side errors (room full, rate limited, etc.)
+  log(`Server error [${code}]: ${message}`, 'err');
+  showToast(`${message} (${code})`);
+  if (code === 'ROOM_FULL') {
+    // Roll back UI to idle
+    document.getElementById('joinBtn').disabled  = false;
+    document.getElementById('leaveBtn').disabled = true;
+    setStatus('Idle', '');
+    stopStream(rawStream);
+    rawStream = localStream = null;
+  }
+});
+
+// ── Candidate Queue Flush ────────────────────────────────────────────────────
+async function flushCandidateQueue() {
+  while (pendingCandidates.length > 0) {
+    const cand = pendingCandidates.shift();
+    try {
+      await pc.addIceCandidate(cand ? new RTCIceCandidate(cand) : null);
+    } catch (e) { /* ignore stale */ }
+  }
+}
+
+// ── Media Setup ───────────────────────────────────────────────────────────────
+async function getLocalMedia() {
+  try {
+    const constraints = {
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+        sampleRate: 48000
+      },
+      video: camEnabled ? { width: 1280, height: 720, frameRate: 30 } : false
+    };
+
+    rawStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+    if (window.VoiceLinkNoiseEngine) {
+      // Pass raw audio through DSP pipeline
+      localStream = await window.VoiceLinkNoiseEngine.init(rawStream);
+
+      // ✅ Web Audio strips video — re-attach video track from rawStream
+      rawStream.getVideoTracks().forEach(t => localStream.addTrack(t));
+    } else {
+      localStream = rawStream;
+    }
+
+    // Preview uses rawStream so we see the unprocessed camera
+    document.getElementById('localVideo').srcObject = rawStream;
+    document.getElementById('localOverlay').style.display = 'none';
+
+    rawStream.getTracks().forEach(t => {
+      if (t.kind === 'audio') setStat('deviceMic', t.label || 'Microphone');
+      if (t.kind === 'video') setStat('deviceCam', t.label || 'Camera');
+    });
+
+    // ✅ Reuse NoiseEngine's AudioContext for the visualizer — no duplicate context
+    setupVisualizer();
+    log('Local media acquired and routed through DSP.', 'ok');
+    return true;
+  } catch (err) {
+    log(`Media error: ${err.message}`, 'err');
+    showToast(err.message);
+    return false;
+  }
+}
+
+// ── WebRTC Core ───────────────────────────────────────────────────────────────
+async function joinRoom() {
+  // ✅ Sanitize room ID — strip anything not alphanumeric or hyphen
+  const rawId = document.getElementById('roomId').value.trim();
+  const sanitized = rawId.replace(/[^A-Za-z0-9\-]/g, '').slice(0, 32);
+  if (sanitized.length < 4) {
+    log('Room ID must be at least 4 alphanumeric characters.', 'warn');
+    showToast('Invalid room ID. Use 4–32 alphanumeric characters.');
+    return;
+  }
+  document.getElementById('roomId').value = sanitized;
+  currentRoom = sanitized;
+
+  const ok = await getLocalMedia();
+  if (!ok) return;
+
+  document.getElementById('joinBtn').disabled  = true;
+  document.getElementById('leaveBtn').disabled = false;
+  setStatus('Connecting…', 'calling');
+  setStat('statPeers', '0');
+
+  socket.emit('join', currentRoom);
+  setStat('statSig', 'Socket.io Connected');
+  log(`Joined room: ${currentRoom}`, 'ok');
+
+  setStatus('In Room', 'active');
+  startTimer();
+}
+
+async function createPeerConnection() {
+  if (pc) {
+    pc.close();
+    pc = null;
+  }
+
+  // Reset candidate state
+  pendingCandidates = [];
+  remoteDescSet     = false;
+
+  pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+
+  // ✅ Add tracks from the POST-DSP stream (clean audio, original video)
+  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+  // ICE candidates — always send to peer
+  pc.onicecandidate = (evt) => {
+    socket.emit('signal', {
+      roomId: currentRoom,
+      signal: { candidate: evt.candidate } // null candidate is valid (end-of-candidates)
+    });
+  };
+
+  // ICE connection state — handle reconnect
+  pc.oniceconnectionstatechange = () => {
+    const s = pc.iceConnectionState;
+    setStat('statIce', s);
+    log(`ICE: ${s}`, s === 'connected' ? 'ok' : s === 'failed' ? 'err' : 'info');
+
+    if (s === 'connected' || s === 'completed') {
+      setStat('statPeers', '1');
+      setStatus('In Call', 'active');
+      startStatsPoller();
+    }
+
+    if (s === 'disconnected') {
+      setStat('statPeers', '0');
+      setStatus('Reconnecting…', 'calling');
+      // ✅ ICE restart — attempt to recover a temporarily lost connection
+      scheduleIceRestart();
+    }
+
+    if (s === 'failed') {
+      setStat('statPeers', '0');
+      setStatus('Connection Failed', 'error');
+      log('ICE failed. Attempting ICE restart…', 'err');
+      doIceRestart();
+    }
+  };
+
+  // Remote stream
+  pc.ontrack = (evt) => {
+    log('Remote track received.', 'ok');
+    const rv = document.getElementById('remoteVideo');
+    rv.srcObject = evt.streams[0];
+    document.getElementById('remoteOverlay').style.display = 'none';
+    setStat('statPeers', '1');
+  };
+
+  // Negotiation needed (fires when tracks added after initial offer)
+  pc.onnegotiationneeded = async () => {
+    if (!isNegotiating && remoteDescSet) {
+      log('Renegotiation needed — sending new offer.', 'info');
+      initiateCall();
+    }
+  };
+
+  log('RTCPeerConnection created.', 'info');
+}
+
+async function initiateCall() {
+  if (isNegotiating) return;
+  isNegotiating = true;
+
+  try {
+    const offer = await pc.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true });
+    await pc.setLocalDescription(offer);
+    socket.emit('signal', { roomId: currentRoom, signal: offer });
+    log('Offer sent.', 'info');
+  } catch (e) {
+    log(`Offer error: ${e.message}`, 'err');
+  } finally {
+    isNegotiating = false;
+  }
+}
+
+// ── ICE Restart ───────────────────────────────────────────────────────────────
+let _iceRestartTimer = null;
+
+function scheduleIceRestart() {
+  clearTimeout(_iceRestartTimer);
+  _iceRestartTimer = setTimeout(() => {
+    if (pc && pc.iceConnectionState === 'disconnected') {
+      log('Peer still disconnected after 5s — attempting ICE restart.', 'warn');
+      doIceRestart();
+    }
+  }, 5000);
+}
+
+async function doIceRestart() {
+  if (!pc || !currentRoom) return;
+  try {
+    const offer = await pc.createOffer({ iceRestart: true });
+    await pc.setLocalDescription(offer);
+    socket.emit('signal', { roomId: currentRoom, signal: offer });
+    log('ICE restart offer sent.', 'info');
+  } catch (e) {
+    log(`ICE restart failed: ${e.message}`, 'err');
+  }
+}
+
+// ── Leave Room ────────────────────────────────────────────────────────────────
+function leaveRoom() {
+  clearTimeout(_iceRestartTimer);
+  stopStatsPoller();
+
+  if (pc) { pc.close(); pc = null; }
+
+  // ✅ Stop BOTH the processed localStream AND the original rawStream
+  // In the old code, only localStream was stopped but rawStream's mic track
+  // stayed live (camera light stayed on, audio still captured).
+  stopStream(localStream);
+  stopStream(rawStream);
+  localStream = rawStream = null;
+
+  // Tear down DSP engine
+  if (window.VoiceLinkNoiseEngine) window.VoiceLinkNoiseEngine.destroy();
+
+  cancelAnimationFrame(vizAF);
+
+  clearRemoteVideo();
+  document.getElementById('localVideo').srcObject = null;
+  document.getElementById('localOverlay').style.display = 'flex';
+  document.getElementById('joinBtn').disabled  = false;
+  document.getElementById('leaveBtn').disabled = true;
+
+  pendingCandidates = [];
+  remoteDescSet     = false;
+  isNegotiating     = false;
+
+  stopTimer();
+  setStat('statIce',  '—');
+  setStat('statSig',  '—');
+  setStat('statPeers','0');
+  setStat('statRtt',    '— ms');
+  setStat('statLoss',   '—%');
+  setStat('statBitrate','— kbps');
+  setStatus('Idle', '');
+  log('Left room. Session ended.', 'warn');
+}
+
+function stopStream(stream) {
+  stream?.getTracks().forEach(t => t.stop());
+}
+
+function clearRemoteVideo() {
+  const rv = document.getElementById('remoteVideo');
+  rv.srcObject = null;
+  document.getElementById('remoteOverlay').style.display = 'flex';
+}
+
+// ── Network Stats Poller ──────────────────────────────────────────────────────
+// ✅ Polls RTCPeerConnection.getStats() every 2s for RTT, loss, bitrate
+function startStatsPoller() {
+  stopStatsPoller();
+  statsPoller = setInterval(async () => {
+    if (!pc) return;
+    try {
+      const stats = await pc.getStats();
+      stats.forEach(report => {
+        if (report.type === 'remote-inbound-rtp' && report.kind === 'audio') {
+          // RTT
+          const rtt = report.roundTripTime;
+          if (rtt !== undefined) setStat('statRtt', `${(rtt * 1000).toFixed(0)} ms`);
+
+          // Packet loss %
+          const lost     = report.packetsLost     || 0;
+          const received = report.packetsReceived  || 0;
+          const total    = lost + received;
+          const loss = total > 0 ? ((lost / total) * 100).toFixed(1) : '0.0';
+          setStat('statLoss', `${loss}%`);
+        }
+
+        if (report.type === 'inbound-rtp' && report.kind === 'audio') {
+          // Bitrate (delta bytes / delta time)
+          const now   = Date.now();
+          const bytes = report.bytesReceived || 0;
+          const dt    = (now - _prevStatsTime) / 1000;
+          if (_prevStatsTime > 0 && dt > 0) {
+            const kbps = ((bytes - _prevBytesReceived) * 8 / dt / 1000).toFixed(1);
+            setStat('statBitrate', `${kbps} kbps`);
+          }
+          _prevBytesReceived = bytes;
+          _prevStatsTime     = now;
+        }
+      });
+    } catch (_) { /* connection may have closed */ }
+  }, 2000);
+}
+
+function stopStatsPoller() {
+  clearInterval(statsPoller);
+  statsPoller = null;
+  _prevBytesReceived = _prevStatsTime = 0;
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+function toggleMic() {
+  micEnabled = !micEnabled;
+  // Toggle on BOTH streams so the worklet and the WebRTC track stay in sync
+  rawStream?.getAudioTracks().forEach(t => t.enabled = micEnabled);
+  localStream?.getAudioTracks().forEach(t => t.enabled = micEnabled);
+  const btn = document.getElementById('micBtn');
+  btn.className = 'ctrl-btn' + (micEnabled ? ' active' : ' danger-active');
+  document.getElementById('micLabel').textContent = micEnabled ? 'Mic On' : 'Muted';
+  log(`Microphone ${micEnabled ? 'unmuted' : 'muted'}.`);
+}
+
+function toggleCam() {
+  camEnabled = !camEnabled;
+  rawStream?.getVideoTracks().forEach(t => t.enabled = camEnabled);
+  const btn = document.getElementById('camBtn');
+  btn.className = 'ctrl-btn' + (camEnabled ? ' active' : '');
+  document.getElementById('camLabel').textContent = camEnabled ? 'Cam On' : 'Cam Off';
+  log(`Camera ${camEnabled ? 'enabled' : 'disabled'}.`);
+}
+
+function toggleSpeaker() {
+  speakerEnabled = !speakerEnabled;
+  const rv = document.getElementById('remoteVideo');
+  if (rv) rv.muted = !speakerEnabled;
+  const btn = document.getElementById('spkBtn');
+  btn.className = 'ctrl-btn' + (speakerEnabled ? ' active' : ' danger-active');
+  document.getElementById('spkLabel').textContent = speakerEnabled ? 'Speaker' : 'Spk Off';
+  log(`Speaker ${speakerEnabled ? 'enabled' : 'disabled'}.`);
+}
+
+function toggleNoiseSuppression() {
+  if (!window.VoiceLinkNoiseEngine || !window.VoiceLinkNoiseEngine.audioCtx) {
+    log('DSP Engine not initialized. Join a call first.', 'err');
+    return;
+  }
+
+  noiseEnabled = !noiseEnabled;
+  const btn = document.getElementById('noiseBtn');
+  btn.className = 'ctrl-btn' + (noiseEnabled ? ' active' : '');
+  document.getElementById('noiseLabel').textContent = noiseEnabled ? 'Noise ON' : 'Noise AI';
+
+  if (noiseEnabled && !window.VoiceLinkNoiseEngine.voiceprint) {
+    document.getElementById('noiseBadge').textContent = '● Enrolling (4s)…';
+    log('No voiceprint — enrolling for 4s. Keep speaking!', 'warn');
+
+    window.VoiceLinkNoiseEngine.enrollVoice(4000).then(() => {
+      log('Voiceprint saved. Noise AI active.', 'ok');
+      document.getElementById('noiseBadge').textContent = '● Noise AI Active';
+      window.VoiceLinkNoiseEngine.setEnabled(true);
+    }).catch(err => {
+      log(`Enrollment failed: ${err.message}`, 'err');
+      noiseEnabled = false;
+      btn.className = 'ctrl-btn';
+      document.getElementById('noiseLabel').textContent = 'Noise AI';
+    });
+  } else {
+    document.getElementById('noiseBadge').textContent = noiseEnabled ? '● Noise AI Active' : '● Phase 2 Ready';
+    window.VoiceLinkNoiseEngine.setEnabled(noiseEnabled);
+    log(`Noise AI ${noiseEnabled ? 'activated' : 'deactivated'}.`, noiseEnabled ? 'ok' : 'warn');
+  }
+}
+
+// ── Visualizer ────────────────────────────────────────────────────────────────
+// ✅ Reuses NoiseEngine's AudioContext and analyser — no duplicate AudioContext
+function setupVisualizer() {
+  const engine = window.VoiceLinkNoiseEngine;
+  if (!engine || !engine.analyser) return;
+
+  const canvas = document.getElementById('vizCanvas');
+  const ctx    = canvas.getContext('2d');
+  canvas.width  = canvas.offsetWidth  * devicePixelRatio;
+  canvas.height = canvas.offsetHeight * devicePixelRatio;
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+
+  const W      = canvas.offsetWidth;
+  const H      = canvas.offsetHeight;
+  const bufLen = engine.analyser.frequencyBinCount;
+  const dataArr = new Uint8Array(bufLen);
+
+  function draw() {
+    vizAF = requestAnimationFrame(draw);
+    engine.analyser.getByteFrequencyData(dataArr);
+    ctx.clearRect(0, 0, W, H);
+
+    const barW = (W / bufLen) * 2.2;
+    let x = 0, sum = 0;
+
+    for (let i = 0; i < bufLen; i++) {
+      const v = dataArr[i];
+      sum += v;
+      const h     = (v / 255) * H;
+      const alpha = 0.5 + (v / 255) * 0.5;
+      ctx.fillStyle = `rgba(0,229,160,${alpha})`;
+      ctx.fillRect(x, H - h, barW - 1, h);
+      x += barW;
+    }
+
+    const avg = sum / bufLen;
+    const db  = avg > 0 ? (20 * Math.log10(avg / 255)).toFixed(1) : '—';
+    document.getElementById('vadLevel').textContent = db;
+  }
+
+  draw();
+}
+
+// ── Logging & Helpers ─────────────────────────────────────────────────────────
 function log(msg, type = '') {
   const box = document.getElementById('logBox');
-  const p = document.createElement('p');
+  const p   = document.createElement('p');
   p.className = type;
-  const ts = new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const ts  = new Date().toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
   p.textContent = `[${ts}] ${msg}`;
   box.appendChild(p);
   box.scrollTop = box.scrollHeight;
+  // Cap log at 100 entries to prevent unbounded DOM growth
+  while (box.children.length > 100) box.removeChild(box.firstChild);
 }
 
 function setStatus(text, state = '') {
@@ -500,10 +919,20 @@ function generateRoom() {
 }
 
 function setStat(id, val) {
-  document.getElementById(id).textContent = val;
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
 }
 
-// ── Duration timer ────────────────────────────
+let _toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('errorToast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.style.display = 'none', 4000);
+}
+
+// ── Duration Timer ────────────────────────────────────────────────────────────
 function startTimer() {
   callSeconds = 0;
   callTimer = setInterval(() => {
@@ -513,260 +942,12 @@ function startTimer() {
     setStat('statDuration', `${m}:${s}`);
   }, 1000);
 }
+
 function stopTimer() {
   clearInterval(callTimer);
   callTimer = null;
   setStat('statDuration', '00:00');
-}
-
-// ── Media Setup & DSP Integration ─────────────
-// ── Media Setup & DSP Integration ─────────────
-async function getLocalMedia() {
-  try {
-    const constraints = {
-      audio: {
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-        sampleRate: 48000
-      },
-      video: camEnabled ? { width: 1280, height: 720, frameRate: 30 } : false
-    };
-    
-    // 1. Get raw media
-    let rawStream = await navigator.mediaDevices.getUserMedia(constraints);
-
-    // 2. PHASE 2 HOOK: Pass raw audio through our custom DSP Pipeline
-    if (window.VoiceLinkNoiseEngine) {
-      localStream = await window.VoiceLinkNoiseEngine.init(rawStream);
-      
-      // THE FIX: The Web Audio API strips video tracks! 
-      // We must manually copy the video track from rawStream back into our cleaned localStream.
-      const videoTracks = rawStream.getVideoTracks();
-      if (videoTracks.length > 0) {
-        localStream.addTrack(videoTracks[0]);
-      }
-    } else {
-      localStream = rawStream; 
-    }
-
-    // Show rawStream in local preview
-    const localVideo = document.getElementById('localVideo');
-    localVideo.srcObject = rawStream;
-    document.getElementById('localOverlay').style.display = 'none';
-
-    // Device labels
-    const tracks = rawStream.getTracks();
-    tracks.forEach(t => {
-      if (t.kind === 'audio') setStat('deviceMic', t.label || 'Microphone');
-      if (t.kind === 'video') setStat('deviceCam', t.label || 'Camera');
-    });
-
-    setupVisualizer(localStream);
-    log('Local media acquired and routed through DSP.', 'ok');
-    return true;
-  } catch (err) {
-    log(`Media error: ${err.message}`, 'err');
-    return false;
-  }
-}
-
-// ── WebRTC Core ───────────────────────────────
-async function joinRoom() {
-  currentRoom = document.getElementById('roomId').value.trim();
-  if (!currentRoom) { log('Enter a room ID first.', 'warn'); return; }
-
-  const ok = await getLocalMedia();
-  if (!ok) return;
-
-  document.getElementById('joinBtn').disabled = true;
-  document.getElementById('leaveBtn').disabled = false;
-  setStatus('Connecting…', 'calling');
-  setStat('statPeers', '0');
-
-  // Emit join to the Node.js signaling server
-  socket.emit('join', currentRoom);
-  setStat('statSig', 'Socket.io Connected');
-  log(`Joined room: ${currentRoom}`, 'ok');
-
-  setStatus('In Room', 'active');
-  startTimer();
-}
-
-async function createPeerConnection() {
-  pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
-
-  // Add local tracks (these are the post-DSP processed tracks!)
-  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-
-  // ICE candidates
-  pc.onicecandidate = (evt) => {
-    if (evt.candidate) {
-      socket.emit('signal', { roomId: currentRoom, signal: { candidate: evt.candidate } });
-    }
-  };
-
-  // ICE state
-  pc.oniceconnectionstatechange = () => {
-    const s = pc.iceConnectionState;
-    setStat('statIce', s);
-    log(`ICE state: ${s}`, s === 'connected' ? 'ok' : s === 'failed' ? 'err' : 'info');
-    if (s === 'connected') {
-      setStat('statPeers', '1');
-      setStatus('In Call', 'active');
-    }
-    if (s === 'disconnected' || s === 'failed') {
-      setStat('statPeers', '0');
-      setStatus('Peer Lost', '');
-    }
-  };
-
-  // Remote stream
-  pc.ontrack = (evt) => {
-    log('Remote track received.', 'ok');
-    const remoteVideo = document.getElementById('remoteVideo');
-    remoteVideo.srcObject = evt.streams[0];
-    document.getElementById('remoteOverlay').style.display = 'none';
-    setStat('statPeers', '1');
-  };
-
-  log('RTCPeerConnection created.', 'info');
-}
-
-async function initiateCall() {
-  const offer = await pc.createOffer({
-    offerToReceiveAudio: true,
-    offerToReceiveVideo: camEnabled
-  });
-  await pc.setLocalDescription(offer);
-  socket.emit('signal', { roomId: currentRoom, signal: offer });
-  log('Offer sent via Socket.io.', 'info');
-}
-
-function leaveRoom() {
-  if (pc) { pc.close(); pc = null; }
-  if (localStream) {
-    localStream.getTracks().forEach(t => t.stop());
-    localStream = null;
-  }
-  if (audioCtx) { audioCtx.close(); audioCtx = null; analyser = null; }
-  cancelAnimationFrame(vizAF);
-
-  document.getElementById('localVideo').srcObject = null;
-  document.getElementById('remoteVideo').srcObject = null;
-  document.getElementById('localOverlay').style.display = 'flex';
-  document.getElementById('remoteOverlay').style.display = 'flex';
-  document.getElementById('joinBtn').disabled = false;
-  document.getElementById('leaveBtn').disabled = true;
-
-  stopTimer();
-  setStat('statIce', '—');
-  setStat('statSig', '—');
-  setStat('statPeers', '0');
-  setStatus('Idle', '');
-  log('Left room. Session ended.', 'warn');
-}
-
-// ── Controls ──────────────────────────────────
-function toggleMic() {
-  micEnabled = !micEnabled;
-  if (localStream) {
-    localStream.getAudioTracks().forEach(t => t.enabled = micEnabled);
-  }
-  const btn = document.getElementById('micBtn');
-  btn.className = 'ctrl-btn' + (micEnabled ? ' active' : ' danger-active');
-  document.getElementById('micLabel').textContent = micEnabled ? 'Mic On' : 'Muted';
-  log(`Microphone ${micEnabled ? 'unmuted' : 'muted'}.`);
-}
-
-function toggleCam() {
-  camEnabled = !camEnabled;
-  if (localStream) {
-    localStream.getVideoTracks().forEach(t => t.enabled = camEnabled);
-  }
-  const btn = document.getElementById('camBtn');
-  btn.className = 'ctrl-btn' + (camEnabled ? ' active' : '');
-  document.getElementById('camLabel').textContent = camEnabled ? 'Cam On' : 'Cam Off';
-  log(`Camera ${camEnabled ? 'enabled' : 'disabled'}.`);
-}
-
-function toggleSpeaker() {
-  speakerEnabled = !speakerEnabled;
-  const rv = document.getElementById('remoteVideo');
-  if(rv) rv.muted = !speakerEnabled;
-  const btn = document.getElementById('spkBtn');
-  btn.className = 'ctrl-btn' + (speakerEnabled ? ' active' : ' danger-active');
-  document.getElementById('spkLabel').textContent = speakerEnabled ? 'Speaker' : 'Spk Off';
-  log(`Speaker ${speakerEnabled ? 'enabled' : 'disabled'}.`);
-}
-
-function toggleNoiseSuppression() {
-  if (!window.VoiceLinkNoiseEngine) {
-    log("DSP Engine not loaded.", "err");
-    return;
-  }
-
-  noiseEnabled = !noiseEnabled;
-  const btn = document.getElementById('noiseBtn');
-  btn.className = 'ctrl-btn' + (noiseEnabled ? ' active' : '');
-  document.getElementById('noiseLabel').textContent = noiseEnabled ? 'Noise ON' : 'Noise AI';
-  
-  // Phase 2 Enrollment Hook
-  if (noiseEnabled && !window.VoiceLinkNoiseEngine.voiceprint) {
-    document.getElementById('noiseBadge').textContent = '● Enrolling (4s)...';
-    log("Voiceprint missing. Enrolling for 4s... Keep talking!", "warn");
-    
-    window.VoiceLinkNoiseEngine.enrollVoice(4000).then(() => {
-      log("Voiceprint saved. Noise AI is now gating.", "ok");
-      document.getElementById('noiseBadge').textContent = '● Noise AI Active';
-      window.VoiceLinkNoiseEngine.setEnabled(true);
-    });
-  } else {
-    document.getElementById('noiseBadge').textContent = noiseEnabled ? '● Noise AI Active' : '● Phase 2 Ready';
-    window.VoiceLinkNoiseEngine.setEnabled(noiseEnabled);
-    log(`Noise AI ${noiseEnabled ? 'activated' : 'deactivated'}.`, noiseEnabled ? 'ok' : 'warn');
-  }
-}
-
-// ── Visualizer ────────────────────────────────
-function setupVisualizer(stream) {
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 256;
-  const src = audioCtx.createMediaStreamSource(stream);
-  src.connect(analyser);
-
-  const canvas = document.getElementById('vizCanvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.offsetWidth * devicePixelRatio;
-  canvas.height = canvas.offsetHeight * devicePixelRatio;
-  ctx.scale(devicePixelRatio, devicePixelRatio);
-
-  const W = canvas.offsetWidth, H = canvas.offsetHeight;
-  const bufLen = analyser.frequencyBinCount;
-  const dataArr = new Uint8Array(bufLen);
-
-  function draw() {
-    vizAF = requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(dataArr);
-    ctx.clearRect(0, 0, W, H);
-    const barW = (W / bufLen) * 2.2;
-    let x = 0;
-    let sum = 0;
-    for (let i = 0; i < bufLen; i++) {
-      const v = dataArr[i];
-      sum += v;
-      const h = (v / 255) * H;
-      const alpha = 0.5 + (v / 255) * 0.5;
-      ctx.fillStyle = `rgba(0,229,160,${alpha})`;
-      ctx.fillRect(x, H - h, barW - 1, h);
-      x += barW;
-    }
-    const avg = sum / bufLen;
-    const db = avg > 0 ? (20 * Math.log10(avg / 255)).toFixed(1) : '—';
-    document.getElementById('vadLevel').textContent = db;
-  }
-  draw();
+  callSeconds = 0;
 }
 </script>
 </body>
