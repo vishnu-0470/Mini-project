@@ -179,3 +179,28 @@ const PORT = process.env.PORT || 3001;
 http.listen(PORT, () => {
   console.log(`✅ VoiceLink Signaling Server running on port ${PORT}`);
 });
+const dgram = require('dgram');
+const udpClient = dgram.createSocket('udp4');
+const MATLAB_PORT = 5005; // The port MATLAB will listen on
+
+// Inside your existing Socket.io connection block:
+io.on('connection', (socket) => {
+    console.log('🟢 User connected to Render cloud:', socket.id);
+
+    // If you have WebRTC video/audio routing, keep it here:
+    socket.on('join-room', (roomId) => {
+        socket.join(roomId);
+        socket.to(roomId).emit('user-connected', socket.id);
+    });
+
+    // RELAY TELEMETRY: 
+    // Render receives the data from the browser, and instantly broadcasts it 
+    // back out over the internet to your local-bridge.js
+    socket.on('dsp-telemetry', (data) => {
+        socket.broadcast.emit('live-data', data); 
+    });
+
+    socket.on('disconnect', () => {
+        console.log('🔴 User disconnected:', socket.id);
+    });
+});
